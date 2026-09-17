@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">TaskFlow</string>
+
+    <string name="home_greeting_morning">Good morning, %1$s 👋</string>
+    <string name="home_greeting_afternoon">Good afternoon, %1$s 👋</string>
+    <string name="home_greeting_evening">Good evening, %1$s 👋</string>
+    <string name="home_stay_focused">Let\'s make today productive.</string>
+    <string name="home_progress_label">Today\'s Progress</string>
+    <string name="home_progress_completed">%1$d of %2$d tasks completed</string>
+    <string name="home_stat_total">Total</string>
+    <string name="home_stat_completed">Completed</string>
+    <string name="home_stat_pending">Pending</string>
+    <string name="home_today_tasks_title">Today\'s Tasks</string>
+    <string name="home_see_all">See all</string>
+    <string name="home_add_task_cd">Create task</string>
+    <string name="home_empty_title">No tasks yet</string>
+    <string name="home_empty_message">Add your first task and start building a productive day.</string>
+    <string name="home_empty_cta">Create Task</string>
 </resources>
