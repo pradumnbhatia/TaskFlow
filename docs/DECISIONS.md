@@ -69,6 +69,10 @@ Building foundation-out rather than screen-by-screen with no working skeleton, s
 
 Each phase should leave the app in a buildable, runnable state — no half-wired screens left in the tree between phases.
 
+## Fix: bottom nav bar was showing on secondary screens
+
+`MainActivity`'s `Scaffold` always rendered the bottom `NavigationBar`, since it lived outside the `NavHost` content and didn't know which destination was current. Once Task Editor was added as a secondary (non-tab) destination, this became visible: the nav bar sat on top of the editor's Save button. Fixed by hoisting the back stack entry above the `Scaffold` and only rendering `bottomBar` when the current destination is one of `TopLevelDestination`'s routes — secondary screens (Task Editor now, Task Details/Settings later) render full-screen.
+
 ## Fix: theme wasn't actually using the brand palette
 
 The reference mockup (`docs/design/taskflow-mockup.png` — saved here 2026-09-17 as the canonical visual reference for every screen going forward) has a deliberate deep-green brand identity. Phase 1's `TaskFlowTheme` never implemented that: it kept Android Studio's default template colors (purple) *and* left `dynamicColor = true`, which on API 31+ overrides everything with a wallpaper-derived Material You palette — so the emulator rendered a generic lavender theme with no relation to either the template colors or the mockup. Fixed by hand-authoring a light/dark `ColorScheme` from the mockup's green (see `Color.kt`) and dropping dynamic color entirely — TaskFlow now always renders its own brand color regardless of device or wallpaper. `TaskListItem`'s checkbox was also swapped for an outlined/filled circle toggle (`Icons.Outlined.Circle` / `Icons.Filled.CheckCircle`) to match the mockup's radio-style task rows instead of a square Material checkbox.

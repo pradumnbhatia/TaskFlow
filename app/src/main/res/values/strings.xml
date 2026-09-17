@@ -35,4 +35,24 @@
     <string name="tasks_sort_priority">Priority (High first)</string>
     <string name="tasks_empty_title">No tasks here</string>
     <string name="tasks_empty_message">Try a different filter, or create a new task.</string>
+
+    <string name="task_editor_title_create">Create Task</string>
+    <string name="task_editor_title_edit">Edit Task</string>
+    <string name="task_editor_back_cd">Back</string>
+    <string name="task_editor_field_title">Task Title</string>
+    <string name="task_editor_field_title_placeholder">e.g. Complete project report</string>
+    <string name="task_editor_field_title_error">Task title is required</string>
+    <string name="task_editor_field_description">Description (optional)</string>
+    <string name="task_editor_field_description_placeholder">Add more details…</string>
+    <string name="task_editor_priority_label">Priority</string>
+    <string name="task_editor_due_date_label">Due Date</string>
+    <string name="task_editor_due_date_placeholder">Set a due date</string>
+    <string name="task_editor_due_time_label">Due Time</string>
+    <string name="task_editor_due_time_placeholder">Set a due time</string>
+    <string name="task_editor_reminder_label">Reminder</string>
+    <string name="task_editor_reminder_description">Remind me</string>
+    <string name="task_editor_save_create">Save Task</string>
+    <string name="task_editor_save_edit">Update Task</string>
+    <string name="task_editor_date_picker_confirm">OK</string>
+    <string name="task_editor_date_picker_cancel">Cancel</string>
 </resources>

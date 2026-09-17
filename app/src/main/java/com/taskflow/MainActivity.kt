@@ -38,21 +38,27 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun TaskFlowApp() {
     val navController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val isTopLevelDestination = TopLevelDestination.entries.any { destination ->
+        currentDestination?.hierarchy?.any { it.route == destination.route } == true
+    }
+
     Scaffold(
         bottomBar = {
-            val navBackStackEntry by navController.currentBackStackEntryAsState()
-            val currentDestination = navBackStackEntry?.destination
-            NavigationBar {
-                TopLevelDestination.entries.forEach { destination ->
-                    val selected = currentDestination?.hierarchy?.any {
-                        it.route == destination.route
-                    } == true
-                    NavigationBarItem(
-                        selected = selected,
-                        onClick = { navController.navigateToTopLevelDestination(destination) },
-                        icon = { Icon(destination.icon, contentDescription = destination.label) },
-                        label = { Text(destination.label) },
-                    )
+            if (isTopLevelDestination) {
+                NavigationBar {
+                    TopLevelDestination.entries.forEach { destination ->
+                        val selected = currentDestination?.hierarchy?.any {
+                            it.route == destination.route
+                        } == true
+                        NavigationBarItem(
+                            selected = selected,
+                            onClick = { navController.navigateToTopLevelDestination(destination) },
+                            icon = { Icon(destination.icon, contentDescription = destination.label) },
+                            label = { Text(destination.label) },
+                        )
+                    }
                 }
             }
         },

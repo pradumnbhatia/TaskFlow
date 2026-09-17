@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter
 
 private val timeFormatter = DateTimeFormatter.ofPattern("h:mm a")
 private val dateFormatter = DateTimeFormatter.ofPattern("d MMM")
+private val fullDateFormatter = DateTimeFormatter.ofPattern("d MMM yyyy")
 
 fun LocalTime.toDisplayString(): String = format(timeFormatter)
 
@@ -14,3 +15,5 @@ fun LocalDate.toRelativeDisplayString(today: LocalDate = LocalDate.now()): Strin
     today.plusDays(1) -> "Tomorrow"
     else -> format(dateFormatter)
 }
+
+fun LocalDate.toFullDisplayString(): String = format(fullDateFormatter)
