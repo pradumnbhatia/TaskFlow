@@ -2,6 +2,7 @@ package com.taskflow.core.database.di
 
 import android.content.Context
 import androidx.room.Room
+import com.taskflow.core.database.MIGRATION_1_2
 import com.taskflow.core.database.TaskDao
 import com.taskflow.core.database.TaskFlowDatabase
 import dagger.Module
@@ -22,7 +23,7 @@ object DatabaseModule {
             context,
             TaskFlowDatabase::class.java,
             "taskflow.db",
-        ).build()
+        ).addMigrations(MIGRATION_1_2).build()
 
     @Provides
     fun provideTaskDao(database: TaskFlowDatabase): TaskDao = database.taskDao()

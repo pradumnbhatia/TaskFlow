@@ -21,4 +21,6 @@ data class TaskEntity(
     val createdAt: Instant,
     val completedAt: Instant?,
     val updatedAt: Instant,
+    val isPendingSync: Boolean = true,
+    val isDeleted: Boolean = false,
 )
