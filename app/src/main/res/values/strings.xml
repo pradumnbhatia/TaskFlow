@@ -16,4 +16,23 @@
     <string name="home_empty_title">No tasks yet</string>
     <string name="home_empty_message">Add your first task and start building a productive day.</string>
     <string name="home_empty_cta">Create Task</string>
+
+    <string name="tasks_title">Tasks</string>
+    <string name="tasks_search_cd">Search tasks</string>
+    <string name="tasks_search_placeholder">Search tasks…</string>
+    <string name="tasks_filter_cd">Filter tasks</string>
+    <string name="tasks_tab_all">All</string>
+    <string name="tasks_tab_today">Today</string>
+    <string name="tasks_tab_upcoming">Upcoming</string>
+    <string name="tasks_tab_completed">Completed</string>
+    <string name="tasks_filters_title">Filters</string>
+    <string name="tasks_clear">Clear</string>
+    <string name="tasks_priority_label">Priority</string>
+    <string name="tasks_priority_all">All</string>
+    <string name="tasks_sort_by_label">Sort by</string>
+    <string name="tasks_sort_due_earliest">Due Date (Earliest)</string>
+    <string name="tasks_sort_due_latest">Due Date (Latest)</string>
+    <string name="tasks_sort_priority">Priority (High first)</string>
+    <string name="tasks_empty_title">No tasks here</string>
+    <string name="tasks_empty_message">Try a different filter, or create a new task.</string>
 </resources>

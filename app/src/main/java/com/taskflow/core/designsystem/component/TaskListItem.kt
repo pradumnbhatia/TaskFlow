@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import com.taskflow.core.common.label
 import com.taskflow.core.common.toDisplayString
 import com.taskflow.core.designsystem.theme.indicatorColor
 import com.taskflow.core.model.Priority
@@ -90,6 +91,3 @@ private fun PriorityDot(priority: Priority, modifier: Modifier = Modifier) {
             .background(priority.indicatorColor),
     )
 }
-
-private val Priority.label: String
-    get() = name.lowercase().replaceFirstChar(Char::uppercase)

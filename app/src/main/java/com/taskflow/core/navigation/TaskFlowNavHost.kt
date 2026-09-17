@@ -7,7 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.taskflow.feature.home.HomeRoute
 import com.taskflow.feature.profile.ProfileScreen
-import com.taskflow.feature.tasks.TasksScreen
+import com.taskflow.feature.tasks.TasksRoute
 
 @Composable
 fun TaskFlowNavHost(
@@ -26,7 +26,14 @@ fun TaskFlowNavHost(
                 onAddTask = {},
             )
         }
-        composable(TopLevelDestination.TASKS.route) { TasksScreen() }
+        composable(TopLevelDestination.TASKS.route) {
+            TasksRoute(
+                // TODO(Phase 6): navigate to Task Details once it exists.
+                onTaskClick = {},
+                // TODO(Phase 5): navigate to the Create Task screen once it exists.
+                onAddTask = {},
+            )
+        }
         composable(TopLevelDestination.PROFILE.route) { ProfileScreen() }
     }
 }
