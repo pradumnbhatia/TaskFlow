@@ -4,6 +4,7 @@ import com.taskflow.core.database.TaskDao
 import com.taskflow.core.database.TaskEntity
 import com.taskflow.core.model.Task
 import com.taskflow.core.model.TaskStatus
+import com.taskflow.core.notification.ReminderScheduler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.time.Instant
@@ -11,6 +12,7 @@ import javax.inject.Inject
 
 class TaskRepositoryImpl @Inject constructor(
     private val taskDao: TaskDao,
+    private val reminderScheduler: ReminderScheduler,
 ) : TaskRepository {
 
     override fun observeTasks(): Flow<List<Task>> =
@@ -23,10 +25,13 @@ class TaskRepositoryImpl @Inject constructor(
         taskDao.getTaskById(id)?.toDomain()
 
     override suspend fun upsertTask(task: Task) {
-        taskDao.upsert(task.copy(updatedAt = Instant.now()).toEntity())
+        val updated = task.copy(updatedAt = Instant.now())
+        taskDao.upsert(updated.toEntity())
+        reminderScheduler.schedule(updated)
     }
 
     override suspend fun deleteTask(id: String) {
+        reminderScheduler.cancel(id)
         taskDao.deleteById(id)
     }
 
@@ -38,6 +43,11 @@ class TaskRepositoryImpl @Inject constructor(
             completedAt = if (status == TaskStatus.COMPLETED) now else null,
             updatedAt = now,
         )
+        if (status == TaskStatus.COMPLETED) {
+            reminderScheduler.cancel(id)
+        } else {
+            taskDao.getTaskById(id)?.toDomain()?.let { reminderScheduler.schedule(it) }
+        }
     }
 
     override suspend fun clearCompletedTasks() {

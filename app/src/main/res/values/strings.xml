@@ -118,4 +118,9 @@
     <string name="settings_about_tagline">Organize today. Build a better tomorrow.</string>
     <string name="settings_about_version">Version %1$s</string>
     <string name="settings_about_description">TaskFlow is a smart, offline-first task manager — your tasks stay with you and sync when you\'re back online.</string>
+
+    <string name="notification_channel_reminders_name">Task reminders</string>
+    <string name="notification_channel_reminders_description">Reminders for tasks with a due date and reminder enabled.</string>
+    <string name="notification_reminder_title">🔔 Task reminder</string>
+    <string name="notification_reminder_body">%1$s is due soon</string>
 </resources>

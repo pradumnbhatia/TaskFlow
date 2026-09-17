@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.taskflow.feature.home.HomeRoute
 import com.taskflow.feature.profile.ProfileRoute
 import com.taskflow.feature.settings.AboutRoute
@@ -75,6 +76,7 @@ fun TaskFlowNavHost(
         composable(
             route = TASK_DETAILS_ROUTE_PATTERN,
             arguments = listOf(navArgument(TASK_ID_ARG) { type = NavType.StringType }),
+            deepLinks = listOf(navDeepLink { uriPattern = TASK_DETAILS_DEEP_LINK_URI_PATTERN }),
         ) {
             TaskDetailsRoute(
                 onNavigateBack = { navController.popBackStack() },
