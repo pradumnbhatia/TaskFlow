@@ -35,6 +35,14 @@
     <string name="tasks_sort_priority">Priority (High first)</string>
     <string name="tasks_empty_title">No tasks here</string>
     <string name="tasks_empty_message">Try a different filter, or create a new task.</string>
+    <string name="tasks_completed_today">Completed today</string>
+    <string name="tasks_completed_yesterday">Completed yesterday</string>
+    <string name="tasks_completed_days_ago">Completed %1$d days ago</string>
+    <string name="tasks_clear_completed_cd">Clear completed tasks</string>
+    <string name="tasks_clear_completed_dialog_title">Clear completed tasks?</string>
+    <string name="tasks_clear_completed_dialog_message">This removes all completed tasks and can\'t be undone.</string>
+    <string name="tasks_clear_completed_dialog_confirm">Clear</string>
+    <string name="tasks_clear_completed_dialog_cancel">Cancel</string>
 
     <string name="task_editor_title_create">Create Task</string>
     <string name="task_editor_title_edit">Edit Task</string>

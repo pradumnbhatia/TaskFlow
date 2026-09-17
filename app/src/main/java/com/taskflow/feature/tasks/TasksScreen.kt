@@ -13,8 +13,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
@@ -43,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.taskflow.R
+import com.taskflow.core.common.daysAgo
 import com.taskflow.core.common.label
 import com.taskflow.core.designsystem.component.EmptyState
 import com.taskflow.core.designsystem.component.TaskListItem
@@ -68,6 +71,7 @@ fun TasksRoute(
         onSearchQueryChanged = viewModel::onSearchQueryChanged,
         onSearchActiveChanged = viewModel::onSearchActiveChanged,
         onToggleTaskStatus = viewModel::onToggleTaskStatus,
+        onClearCompletedTasks = viewModel::onClearCompletedTasks,
         modifier = modifier,
     )
 }
@@ -85,9 +89,11 @@ fun TasksScreen(
     onSearchQueryChanged: (String) -> Unit,
     onSearchActiveChanged: (Boolean) -> Unit,
     onToggleTaskStatus: (Task) -> Unit,
+    onClearCompletedTasks: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var showFilterSheet by remember { mutableStateOf(false) }
+    var showClearCompletedDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
@@ -97,6 +103,7 @@ fun TasksScreen(
                 onSearchQueryChanged = onSearchQueryChanged,
                 onSearchActiveChanged = onSearchActiveChanged,
                 onFilterClick = { showFilterSheet = true },
+                onClearCompletedClick = { showClearCompletedDialog = true },
             )
         },
         floatingActionButton = {
@@ -127,6 +134,30 @@ fun TasksScreen(
             onDismiss = { showFilterSheet = false },
         )
     }
+
+    if (showClearCompletedDialog) {
+        AlertDialog(
+            onDismissRequest = { showClearCompletedDialog = false },
+            title = { Text(stringResource(R.string.tasks_clear_completed_dialog_title)) },
+            text = { Text(stringResource(R.string.tasks_clear_completed_dialog_message)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showClearCompletedDialog = false
+                    onClearCompletedTasks()
+                }) {
+                    Text(
+                        text = stringResource(R.string.tasks_clear_completed_dialog_confirm),
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showClearCompletedDialog = false }) {
+                    Text(stringResource(R.string.tasks_clear_completed_dialog_cancel))
+                }
+            },
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -136,9 +167,15 @@ private fun TasksTopBar(
     onSearchQueryChanged: (String) -> Unit,
     onSearchActiveChanged: (Boolean) -> Unit,
     onFilterClick: () -> Unit,
+    onClearCompletedClick: () -> Unit,
 ) {
-    val isSearchActive = (uiState as? TasksUiState.Loaded)?.isSearchActive == true
-    val searchQuery = (uiState as? TasksUiState.Loaded)?.filter?.searchQuery.orEmpty()
+    val loaded = uiState as? TasksUiState.Loaded
+    val isSearchActive = loaded?.isSearchActive == true
+    val searchQuery = loaded?.filter?.searchQuery.orEmpty()
+    val showClearCompleted = loaded != null &&
+        loaded.filter.listFilter == TaskListFilter.COMPLETED &&
+        loaded.tasks.isNotEmpty() &&
+        !isSearchActive
 
     TopAppBar(
         title = {
@@ -160,6 +197,14 @@ private fun TasksTopBar(
                     Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.tasks_search_cd))
                 }
             } else {
+                if (showClearCompleted) {
+                    IconButton(onClick = onClearCompletedClick) {
+                        Icon(
+                            Icons.Filled.DeleteSweep,
+                            contentDescription = stringResource(R.string.tasks_clear_completed_cd),
+                        )
+                    }
+                }
                 IconButton(onClick = { onSearchActiveChanged(true) }) {
                     Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.tasks_search_cd))
                 }
@@ -206,10 +251,16 @@ private fun TasksContent(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 items(items = uiState.tasks, key = Task::id) { task ->
+                    val subtitleOverride = if (uiState.filter.listFilter == TaskListFilter.COMPLETED) {
+                        task.completedAt?.let { completedAgoLabel(daysAgo = it.daysAgo()) }
+                    } else {
+                        null
+                    }
                     TaskListItem(
                         task = task,
                         onClick = { onTaskClick(task.id) },
                         onToggleComplete = { onToggleTaskStatus(task) },
+                        subtitleOverride = subtitleOverride,
                     )
                 }
             }
@@ -236,6 +287,13 @@ private fun ListFilterTabs(
             }
         }
     }
+}
+
+@Composable
+private fun completedAgoLabel(daysAgo: Long): String = when (daysAgo) {
+    0L -> stringResource(R.string.tasks_completed_today)
+    1L -> stringResource(R.string.tasks_completed_yesterday)
+    else -> stringResource(R.string.tasks_completed_days_ago, daysAgo)
 }
 
 private fun TaskListFilter.labelRes(): Int = when (this) {

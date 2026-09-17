@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Instant
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -74,6 +75,12 @@ class TasksViewModel @Inject constructor(
             taskRepository.setTaskStatus(task.id, newStatus)
         }
     }
+
+    fun onClearCompletedTasks() {
+        viewModelScope.launch {
+            taskRepository.clearCompletedTasks()
+        }
+    }
 }
 
 private fun List<Task>.applyFilter(filter: TasksFilterState): List<Task> {
@@ -96,6 +103,12 @@ private fun List<Task>.applyFilter(filter: TasksFilterState): List<Task> {
         byPriority
     } else {
         byPriority.filter { it.title.contains(filter.searchQuery, ignoreCase = true) }
+    }
+
+    // Completed tasks read best ordered by how recently they were finished — the due-date/
+    // priority sort options exist for the pending-task tabs, not this one.
+    if (filter.listFilter == TaskListFilter.COMPLETED) {
+        return bySearch.sortedWith(compareByDescending(nullsFirst<Instant>()) { it.completedAt })
     }
 
     return when (filter.sortOrder) {

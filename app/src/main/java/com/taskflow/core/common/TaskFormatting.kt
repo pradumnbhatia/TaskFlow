@@ -5,6 +5,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 private val timeFormatter = DateTimeFormatter.ofPattern("h:mm a")
 private val dateFormatter = DateTimeFormatter.ofPattern("d MMM")
@@ -21,3 +22,9 @@ fun LocalDate.toRelativeDisplayString(today: LocalDate = LocalDate.now()): Strin
 fun LocalDate.toFullDisplayString(): String = format(fullDateFormatter)
 
 fun Instant.toDisplayDateString(): String = atZone(ZoneId.systemDefault()).toLocalDate().toFullDisplayString()
+
+/** Whole days between this instant's local date and [today] (0 = same day, 1 = yesterday, ...). */
+fun Instant.daysAgo(today: LocalDate = LocalDate.now()): Long {
+    val completedDate = atZone(ZoneId.systemDefault()).toLocalDate()
+    return ChronoUnit.DAYS.between(completedDate, today).coerceAtLeast(0L)
+}

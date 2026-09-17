@@ -37,6 +37,7 @@ fun TaskListItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     onToggleComplete: (() -> Unit)? = null,
+    subtitleOverride: String? = null,
 ) {
     val isCompleted = task.status == TaskStatus.COMPLETED
     Card(
@@ -65,17 +66,25 @@ fun TaskListItem(
                     style = MaterialTheme.typography.bodyLarge,
                     textDecoration = if (isCompleted) TextDecoration.LineThrough else null,
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    PriorityDot(priority = task.priority)
-                    val timeLabel = task.dueTime?.toDisplayString()
+                if (subtitleOverride != null) {
                     Text(
-                        text = listOfNotNull(task.priority.label, timeLabel).joinToString(" · "),
+                        text = subtitleOverride,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
+                } else {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    ) {
+                        PriorityDot(priority = task.priority)
+                        val timeLabel = task.dueTime?.toDisplayString()
+                        Text(
+                            text = listOfNotNull(task.priority.label, timeLabel).joinToString(" · "),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
             }
         }
