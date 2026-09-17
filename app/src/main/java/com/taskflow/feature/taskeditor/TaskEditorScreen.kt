@@ -18,8 +18,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,17 +39,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.taskflow.R
-import com.taskflow.core.common.label
 import com.taskflow.core.common.toDisplayString
 import com.taskflow.core.common.toFullDisplayString
-import com.taskflow.core.designsystem.theme.indicatorColor
+import com.taskflow.core.designsystem.component.PrioritySelector
 import com.taskflow.core.model.Priority
 import java.time.Instant
 import java.time.LocalDate
@@ -262,23 +258,6 @@ private fun EditorPickerRow(icon: ImageVector, text: String, onClick: () -> Unit
         ) {
             Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             Text(text)
-        }
-    }
-}
-
-@Composable
-private fun PrioritySelector(selected: Priority, onSelected: (Priority) -> Unit) {
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Priority.entries.forEach { priority ->
-            FilterChip(
-                selected = selected == priority,
-                onClick = { onSelected(priority) },
-                label = { Text(priority.label) },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = priority.indicatorColor,
-                    selectedLabelColor = Color.White,
-                ),
-            )
         }
     }
 }

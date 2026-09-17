@@ -8,7 +8,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.taskflow.feature.home.HomeRoute
-import com.taskflow.feature.profile.ProfileScreen
+import com.taskflow.feature.profile.ProfileRoute
+import com.taskflow.feature.settings.AboutRoute
+import com.taskflow.feature.settings.AppearanceSettingsRoute
+import com.taskflow.feature.settings.NotificationsSettingsRoute
+import com.taskflow.feature.settings.PreferencesSettingsRoute
 import com.taskflow.feature.taskdetails.TaskDetailsRoute
 import com.taskflow.feature.taskeditor.TaskEditorRoute
 import com.taskflow.feature.tasks.TasksRoute
@@ -36,7 +40,26 @@ fun TaskFlowNavHost(
                 onAddTask = { navController.navigate(taskEditorRoute()) },
             )
         }
-        composable(TopLevelDestination.PROFILE.route) { ProfileScreen() }
+        composable(TopLevelDestination.PROFILE.route) {
+            ProfileRoute(
+                onNotificationsClick = { navController.navigate(SETTINGS_NOTIFICATIONS_ROUTE) },
+                onAppearanceClick = { navController.navigate(SETTINGS_APPEARANCE_ROUTE) },
+                onPreferencesClick = { navController.navigate(SETTINGS_PREFERENCES_ROUTE) },
+                onAboutClick = { navController.navigate(SETTINGS_ABOUT_ROUTE) },
+            )
+        }
+        composable(SETTINGS_NOTIFICATIONS_ROUTE) {
+            NotificationsSettingsRoute(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(SETTINGS_APPEARANCE_ROUTE) {
+            AppearanceSettingsRoute(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(SETTINGS_PREFERENCES_ROUTE) {
+            PreferencesSettingsRoute(onNavigateBack = { navController.popBackStack() })
+        }
+        composable(SETTINGS_ABOUT_ROUTE) {
+            AboutRoute(onNavigateBack = { navController.popBackStack() })
+        }
         composable(
             route = TASK_EDITOR_ROUTE_PATTERN,
             arguments = listOf(

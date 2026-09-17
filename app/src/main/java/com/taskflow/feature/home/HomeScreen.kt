@@ -36,6 +36,7 @@ import com.taskflow.R
 import com.taskflow.core.common.DEFAULT_USER_NAME
 import com.taskflow.core.designsystem.component.EmptyState
 import com.taskflow.core.designsystem.component.InitialsAvatar
+import com.taskflow.core.designsystem.component.StatColumn
 import com.taskflow.core.designsystem.component.TaskListItem
 import com.taskflow.core.model.Task
 
@@ -214,23 +215,11 @@ private fun TodayProgressCard(
                     .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                StatColumn(value = totalTasks, label = stringResource(R.string.home_stat_total))
-                StatColumn(value = completedTasks, label = stringResource(R.string.home_stat_completed))
-                StatColumn(value = pendingTasks, label = stringResource(R.string.home_stat_pending))
+                StatColumn(value = totalTasks.toString(), label = stringResource(R.string.home_stat_total))
+                StatColumn(value = completedTasks.toString(), label = stringResource(R.string.home_stat_completed))
+                StatColumn(value = pendingTasks.toString(), label = stringResource(R.string.home_stat_pending))
             }
         }
-    }
-}
-
-@Composable
-private fun StatColumn(value: Int, label: String, modifier: Modifier = Modifier) {
-    Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = value.toString(), style = MaterialTheme.typography.titleLarge)
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
     }
 }
 

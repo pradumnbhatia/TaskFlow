@@ -85,4 +85,37 @@
     <string name="task_details_delete_dialog_confirm">Delete</string>
     <string name="task_details_delete_dialog_cancel">Cancel</string>
     <string name="task_details_not_found">Task not found</string>
+
+    <string name="profile_tagline">Stay consistent! 🔥</string>
+    <string name="profile_stat_tasks_done">Tasks Done</string>
+    <string name="profile_stat_completion_rate">Completion Rate</string>
+    <string name="profile_stat_streak">Day Streak</string>
+    <string name="profile_settings_section">Settings</string>
+    <string name="profile_notifications">Notifications</string>
+    <string name="profile_appearance">Appearance</string>
+    <string name="profile_preferences">Preferences</string>
+    <string name="profile_about">About TaskFlow</string>
+
+    <string name="settings_back_cd">Back</string>
+
+    <string name="settings_notifications_title">Notifications</string>
+    <string name="settings_notifications_task_reminders">Task reminders</string>
+    <string name="settings_notifications_daily_summary">Daily summary</string>
+    <string name="settings_notifications_completed_sound">Completed task sound</string>
+
+    <string name="settings_appearance_title">Appearance</string>
+    <string name="settings_appearance_system">System</string>
+    <string name="settings_appearance_light">Light</string>
+    <string name="settings_appearance_dark">Dark</string>
+
+    <string name="settings_preferences_title">Preferences</string>
+    <string name="settings_preferences_default_priority">Default priority</string>
+    <string name="settings_preferences_default_reminder">Default reminder time</string>
+    <string name="settings_preferences_reminder_minutes">%1$d minutes before</string>
+    <string name="settings_preferences_week_starts_monday">Start week on Monday</string>
+
+    <string name="settings_about_title">About TaskFlow</string>
+    <string name="settings_about_tagline">Organize today. Build a better tomorrow.</string>
+    <string name="settings_about_version">Version %1$s</string>
+    <string name="settings_about_description">TaskFlow is a smart, offline-first task manager — your tasks stay with you and sync when you\'re back online.</string>
 </resources>
