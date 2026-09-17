@@ -33,9 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.taskflow.R
+import com.taskflow.core.common.ConnectivityViewModel
 import com.taskflow.core.common.DEFAULT_USER_NAME
 import com.taskflow.core.designsystem.component.EmptyState
 import com.taskflow.core.designsystem.component.InitialsAvatar
+import com.taskflow.core.designsystem.component.OfflineBanner
 import com.taskflow.core.designsystem.component.StatColumn
 import com.taskflow.core.designsystem.component.TaskListItem
 import com.taskflow.core.model.Task
@@ -47,10 +49,13 @@ fun HomeRoute(
     onTaskClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
+    connectivityViewModel: ConnectivityViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isOnline by connectivityViewModel.isOnline.collectAsStateWithLifecycle()
     HomeScreen(
         uiState = uiState,
+        isOnline = isOnline,
         onSeeAllTasks = onSeeAllTasks,
         onAddTask = onAddTask,
         onTaskClick = onTaskClick,
@@ -65,6 +70,7 @@ fun HomeScreen(
     onAddTask: () -> Unit,
     onTaskClick: (String) -> Unit,
     modifier: Modifier = Modifier,
+    isOnline: Boolean = true,
 ) {
     Scaffold(
         modifier = modifier,
@@ -75,14 +81,21 @@ fun HomeScreen(
         },
     ) { innerPadding ->
         when (uiState) {
-            is HomeUiState.Loading -> Box(modifier = Modifier.padding(innerPadding).fillMaxSize())
-            is HomeUiState.Loaded -> HomeContent(
-                uiState = uiState,
-                onSeeAllTasks = onSeeAllTasks,
-                onAddTask = onAddTask,
-                onTaskClick = onTaskClick,
-                contentPadding = innerPadding,
-            )
+            is HomeUiState.Loading -> Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+            is HomeUiState.Loaded -> Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+                if (!isOnline) {
+                    OfflineBanner()
+                }
+                HomeContent(
+                    uiState = uiState,
+                    onSeeAllTasks = onSeeAllTasks,
+                    onAddTask = onAddTask,
+                    onTaskClick = onTaskClick,
+                    contentPadding = PaddingValues(0.dp),
+                )
+            }
         }
     }
 }

@@ -10,6 +10,7 @@ import com.taskflow.core.model.Task
 import com.taskflow.core.model.TaskStatus
 import com.taskflow.core.navigation.TASK_ID_ARG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,6 +47,9 @@ class TaskEditorViewModel @Inject constructor(
 
     private val saveCompletedChannel = Channel<Unit>(Channel.CONFLATED)
     val saveCompletedEvents: Flow<Unit> = saveCompletedChannel.receiveAsFlow()
+
+    private val errorChannel = Channel<Unit>(Channel.CONFLATED)
+    val errorEvents: Flow<Unit> = errorChannel.receiveAsFlow()
 
     init {
         viewModelScope.launch {
@@ -121,9 +125,16 @@ class TaskEditorViewModel @Inject constructor(
                 completedAt = originalTask?.completedAt,
                 updatedAt = now,
             )
-            taskRepository.upsertTask(task)
-            _uiState.update { it.copy(isSaving = false) }
-            saveCompletedChannel.trySend(Unit)
+            try {
+                taskRepository.upsertTask(task)
+                saveCompletedChannel.trySend(Unit)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                errorChannel.trySend(Unit)
+            } finally {
+                _uiState.update { it.copy(isSaving = false) }
+            }
         }
     }
 }

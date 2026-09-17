@@ -16,12 +16,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -56,8 +59,13 @@ fun TaskDetailsRoute(
     viewModel: TaskDetailsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val errorMessage = stringResource(R.string.error_generic_message)
     LaunchedEffect(Unit) {
         viewModel.deletedEvents.collect { onNavigateBack() }
+    }
+    LaunchedEffect(Unit) {
+        viewModel.errorEvents.collect { snackbarHostState.showSnackbar(errorMessage) }
     }
     TaskDetailsScreen(
         uiState = uiState,
@@ -66,6 +74,7 @@ fun TaskDetailsRoute(
         onToggleStatus = viewModel::onToggleStatus,
         onDeleteConfirmed = viewModel::onDeleteConfirmed,
         modifier = modifier,
+        snackbarHostState = snackbarHostState,
     )
 }
 
@@ -78,11 +87,13 @@ fun TaskDetailsScreen(
     onToggleStatus: () -> Unit,
     onDeleteConfirmed: () -> Unit,
     modifier: Modifier = Modifier,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.task_details_title)) },
@@ -98,7 +109,12 @@ fun TaskDetailsScreen(
         },
     ) { innerPadding ->
         when (uiState) {
-            is TaskDetailsUiState.Loading -> Box(modifier = Modifier.padding(innerPadding).fillMaxSize())
+            is TaskDetailsUiState.Loading -> Box(
+                modifier = Modifier.padding(innerPadding).fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator()
+            }
             is TaskDetailsUiState.NotFound -> Box(
                 modifier = Modifier.padding(innerPadding).fillMaxSize(),
                 contentAlignment = Alignment.Center,

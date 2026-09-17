@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.DeleteSweep
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
@@ -39,15 +40,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.taskflow.R
+import com.taskflow.core.common.ConnectivityViewModel
 import com.taskflow.core.common.daysAgo
 import com.taskflow.core.common.label
 import com.taskflow.core.designsystem.component.EmptyState
+import com.taskflow.core.designsystem.component.OfflineBanner
 import com.taskflow.core.designsystem.component.TaskListItem
 import com.taskflow.core.model.Priority
 import com.taskflow.core.model.Task
@@ -58,10 +62,13 @@ fun TasksRoute(
     onAddTask: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: TasksViewModel = hiltViewModel(),
+    connectivityViewModel: ConnectivityViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isOnline by connectivityViewModel.isOnline.collectAsStateWithLifecycle()
     TasksScreen(
         uiState = uiState,
+        isOnline = isOnline,
         onTaskClick = onTaskClick,
         onAddTask = onAddTask,
         onListFilterSelected = viewModel::onListFilterSelected,
@@ -91,6 +98,7 @@ fun TasksScreen(
     onToggleTaskStatus: (Task) -> Unit,
     onClearCompletedTasks: () -> Unit,
     modifier: Modifier = Modifier,
+    isOnline: Boolean = true,
 ) {
     var showFilterSheet by remember { mutableStateOf(false) }
     var showClearCompletedDialog by remember { mutableStateOf(false) }
@@ -113,14 +121,21 @@ fun TasksScreen(
         },
     ) { innerPadding ->
         when (uiState) {
-            is TasksUiState.Loading -> Box(modifier = Modifier.padding(innerPadding).fillMaxSize())
-            is TasksUiState.Loaded -> TasksContent(
-                uiState = uiState,
-                onListFilterSelected = onListFilterSelected,
-                onTaskClick = onTaskClick,
-                onToggleTaskStatus = onToggleTaskStatus,
-                contentPadding = innerPadding,
-            )
+            is TasksUiState.Loading -> Box(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+            is TasksUiState.Loaded -> Column(modifier = Modifier.padding(innerPadding).fillMaxSize()) {
+                if (!isOnline) {
+                    OfflineBanner()
+                }
+                TasksContent(
+                    uiState = uiState,
+                    onListFilterSelected = onListFilterSelected,
+                    onTaskClick = onTaskClick,
+                    onToggleTaskStatus = onToggleTaskStatus,
+                    contentPadding = PaddingValues(0.dp),
+                )
+            }
         }
     }
 

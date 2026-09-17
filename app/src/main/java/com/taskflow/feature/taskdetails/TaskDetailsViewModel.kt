@@ -8,6 +8,7 @@ import com.taskflow.core.datastore.UserPreferencesRepository
 import com.taskflow.core.model.TaskStatus
 import com.taskflow.core.navigation.TASK_ID_ARG
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
@@ -45,22 +46,37 @@ class TaskDetailsViewModel @Inject constructor(
     private val deletedChannel = Channel<Unit>(Channel.CONFLATED)
     val deletedEvents: Flow<Unit> = deletedChannel.receiveAsFlow()
 
+    private val errorChannel = Channel<Unit>(Channel.CONFLATED)
+    val errorEvents: Flow<Unit> = errorChannel.receiveAsFlow()
+
     fun onToggleStatus() {
         val loaded = uiState.value as? TaskDetailsUiState.Loaded ?: return
         viewModelScope.launch {
-            val newStatus = if (loaded.task.status == TaskStatus.COMPLETED) {
-                TaskStatus.PENDING
-            } else {
-                TaskStatus.COMPLETED
+            try {
+                val newStatus = if (loaded.task.status == TaskStatus.COMPLETED) {
+                    TaskStatus.PENDING
+                } else {
+                    TaskStatus.COMPLETED
+                }
+                taskRepository.setTaskStatus(loaded.task.id, newStatus)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                errorChannel.trySend(Unit)
             }
-            taskRepository.setTaskStatus(loaded.task.id, newStatus)
         }
     }
 
     fun onDeleteConfirmed() {
         viewModelScope.launch {
-            taskRepository.deleteTask(taskId)
-            deletedChannel.trySend(Unit)
+            try {
+                taskRepository.deleteTask(taskId)
+                deletedChannel.trySend(Unit)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                errorChannel.trySend(Unit)
+            }
         }
     }
 }

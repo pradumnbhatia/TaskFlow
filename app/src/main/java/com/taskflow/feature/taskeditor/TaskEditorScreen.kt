@@ -24,6 +24,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -61,8 +63,13 @@ fun TaskEditorRoute(
     viewModel: TaskEditorViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val errorMessage = stringResource(R.string.error_generic_message)
     LaunchedEffect(Unit) {
         viewModel.saveCompletedEvents.collect { onNavigateBack() }
+    }
+    LaunchedEffect(Unit) {
+        viewModel.errorEvents.collect { snackbarHostState.showSnackbar(errorMessage) }
     }
     TaskEditorScreen(
         uiState = uiState,
@@ -75,6 +82,7 @@ fun TaskEditorRoute(
         onSaveClicked = viewModel::onSaveClicked,
         onNavigateBack = onNavigateBack,
         modifier = modifier,
+        snackbarHostState = snackbarHostState,
     )
 }
 
@@ -91,12 +99,14 @@ fun TaskEditorScreen(
     onSaveClicked: () -> Unit,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {

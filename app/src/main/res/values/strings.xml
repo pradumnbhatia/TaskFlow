@@ -123,4 +123,7 @@
     <string name="notification_channel_reminders_description">Reminders for tasks with a due date and reminder enabled.</string>
     <string name="notification_reminder_title">🔔 Task reminder</string>
     <string name="notification_reminder_body">%1$s is due soon</string>
+
+    <string name="offline_banner_message">You\'re offline — changes will sync when you\'re back online.</string>
+    <string name="error_generic_message">Something went wrong. Please try again.</string>
 </resources>
