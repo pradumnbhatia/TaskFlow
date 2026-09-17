@@ -1,7 +1,9 @@
 package com.taskflow.core.common
 
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 private val timeFormatter = DateTimeFormatter.ofPattern("h:mm a")
@@ -17,3 +19,5 @@ fun LocalDate.toRelativeDisplayString(today: LocalDate = LocalDate.now()): Strin
 }
 
 fun LocalDate.toFullDisplayString(): String = format(fullDateFormatter)
+
+fun Instant.toDisplayDateString(): String = atZone(ZoneId.systemDefault()).toLocalDate().toFullDisplayString()

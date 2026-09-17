@@ -55,4 +55,26 @@
     <string name="task_editor_save_edit">Update Task</string>
     <string name="task_editor_date_picker_confirm">OK</string>
     <string name="task_editor_date_picker_cancel">Cancel</string>
+
+    <string name="task_details_title">Task Details</string>
+    <string name="task_details_back_cd">Back</string>
+    <string name="task_details_due_label">Due</string>
+    <string name="task_details_due_no_date">No due date</string>
+    <string name="task_details_reminder_label">Reminder</string>
+    <string name="task_details_reminder_on">%1$d minutes before</string>
+    <string name="task_details_reminder_off">Off</string>
+    <string name="task_details_status_label">Status</string>
+    <string name="task_details_status_pending">Pending</string>
+    <string name="task_details_status_completed">Completed</string>
+    <string name="task_details_created_label">Created</string>
+    <string name="task_details_updated_label">Last Updated</string>
+    <string name="task_details_mark_completed">Mark as Completed</string>
+    <string name="task_details_mark_pending">Mark as Pending</string>
+    <string name="task_details_edit">Edit</string>
+    <string name="task_details_delete">Delete</string>
+    <string name="task_details_delete_dialog_title">Delete task?</string>
+    <string name="task_details_delete_dialog_message">This can\'t be undone.</string>
+    <string name="task_details_delete_dialog_confirm">Delete</string>
+    <string name="task_details_delete_dialog_cancel">Cancel</string>
+    <string name="task_details_not_found">Task not found</string>
 </resources>

@@ -43,6 +43,7 @@ import com.taskflow.core.model.Task
 fun HomeRoute(
     onSeeAllTasks: () -> Unit,
     onAddTask: () -> Unit,
+    onTaskClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -51,6 +52,7 @@ fun HomeRoute(
         uiState = uiState,
         onSeeAllTasks = onSeeAllTasks,
         onAddTask = onAddTask,
+        onTaskClick = onTaskClick,
         modifier = modifier,
     )
 }
@@ -60,6 +62,7 @@ fun HomeScreen(
     uiState: HomeUiState,
     onSeeAllTasks: () -> Unit,
     onAddTask: () -> Unit,
+    onTaskClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -76,6 +79,7 @@ fun HomeScreen(
                 uiState = uiState,
                 onSeeAllTasks = onSeeAllTasks,
                 onAddTask = onAddTask,
+                onTaskClick = onTaskClick,
                 contentPadding = innerPadding,
             )
         }
@@ -87,6 +91,7 @@ private fun HomeContent(
     uiState: HomeUiState.Loaded,
     onSeeAllTasks: () -> Unit,
     onAddTask: () -> Unit,
+    onTaskClick: (String) -> Unit,
     contentPadding: PaddingValues,
 ) {
     if (uiState.totalTasksToday == 0) {
@@ -154,7 +159,7 @@ private fun HomeContent(
             }
         }
         items(items = uiState.todayTasks, key = Task::id) { task ->
-            TaskListItem(task = task, onClick = { /* wired in Phase 6 (Task Details) */ })
+            TaskListItem(task = task, onClick = { onTaskClick(task.id) })
         }
     }
 }
